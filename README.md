@@ -146,7 +146,7 @@ db.produtos.aggregate([
 
 ## Criar um novo campo com $set para mostrar o preço final com desconto
 
-```
+```JavaScript
 db.produtos.aggregate([
   { "$set": { "valorComDesconto": { "$multiply": ["$valorProduto", 0.9] } } }
 ])
