@@ -49,5 +49,5 @@ for (var i = 0; i < 500; i++) {
 
 db.produtos.insertMany(produtos);
 
-db.produtos.findOne();
+
 print("✅ 500 produtos inseridos com sucesso!");
