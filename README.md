@@ -288,6 +288,7 @@ docker compose up -d jupyter_service
 ```bash
 docker compose up -d api
 ```
+> http://localhost:8000/docs
 
 ## Configurando o Kafka Connect e seus conectores, que serão responsáveis,  pela leitura das informações em Mongodb
 
