@@ -30,7 +30,7 @@ O Arquivo `docker-compose` provisiona cluster de mongodb com replica set de 3 in
 
 ---
 
-## Subindo no nodes do Monogodb
+## Subindo os nodes do Monogodb
 
 ```bash
 docker-compose up -d mongo1 mongo2 mongo3
