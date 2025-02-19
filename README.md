@@ -8,6 +8,11 @@
 
 ---
 
+![Lab](/content/arc.png)
+
+---
+
+# Mongodb
 
 ![Cluster Mongo db](/content/cluster-mongdb.png)
 
