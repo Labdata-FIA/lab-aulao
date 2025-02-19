@@ -55,7 +55,8 @@ services:
     ports:
       - 8085:8085   
     volumes:
-      - ./jupyter:/jupyter/   
+      - ./jupyter/docker-entrypoint.sh:/jupyter/docker-entrypoint.sh
+      - ./jupyter/pyMongoArrow.ipynb:/home/src/pyMongoArrow.ipynb
 
   api:
     build:
