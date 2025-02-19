@@ -313,11 +313,11 @@ docker exec -it kafkaConect curl  http://localhost:8083/connector-plugins
 
 ```bash
  
- curl -X PUT -d @conector-mongdb.json http://localhost:8083/connectors/connector-mongodb/config -H 'Content-Type: application/json' -H 'Accept: application/json'
+ curl -X PUT -d @kafka-connect/conector-mongdb.json http://localhost:8083/connectors/connector-mongodb/config -H 'Content-Type: application/json' -H 'Accept: application/json'
 
 
 //Ou via powershell
-$response = Invoke-WebRequest -Uri "http://localhost:8083/connectors/connector-mongodb/config" -Method Put -Body (Get-Content -Path "conector-mongdb.json" -Raw) -ContentType "application/json"; $response.Content
+$response = Invoke-WebRequest -Uri "http://localhost:8083/connectors/connector-mongodb/config" -Method Put -Body (Get-Content -Path "kafka-connect/conector-mongdb.json" -Raw) -ContentType "application/json"; $response.Content
 
 ```
 
