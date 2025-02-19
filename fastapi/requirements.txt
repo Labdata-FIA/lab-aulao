@@ -2,3 +2,4 @@ fastapi==0.100.0
 uvicorn
 pymongo[srv]
 python-dotenv
+orjson==3.10.14

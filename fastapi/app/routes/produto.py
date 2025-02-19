@@ -14,7 +14,7 @@ produto_collection = db[settings.COLLECTION_PRODUCT]
 
 router = APIRouter()
 
-@router.get("/produtos/{produto_id}", response_model=Produto, status_code=status.HTTP_200_OK)
+@router.get("/{produto_id}", response_model=Produto, status_code=status.HTTP_200_OK)
 async def get_produto(produto_id: str):
     produto = produto_collection.find_one({"_id": ObjectId(produto_id)})
     if not produto:
@@ -24,7 +24,7 @@ async def get_produto(produto_id: str):
     produto_response = ProdutoMapper.from_mongo_to_response(produto)
     return produto_response
 
-@router.put("/produtos/", response_model=Produto, status_code=status.HTTP_201_CREATED)
+@router.put("/", response_model=Produto, status_code=status.HTTP_201_CREATED)
 async def save_produto(produto: Produto):
     produto_dict = ProdutoMapper.from_request_to_mongo(produto)
     #produto_collection.insert_one(produto_dict)
@@ -40,7 +40,7 @@ async def save_produto(produto: Produto):
 
     return produto
 
-@router.delete("/produtos/{produto_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{produto_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_produto(produto_id: str):
     result = produto_collection.delete_one({"_id": ObjectId(produto_id)})
     if result.deleted_count == 0:
