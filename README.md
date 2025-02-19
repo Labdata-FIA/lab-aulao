@@ -217,17 +217,17 @@ db.produtos.aggregate([
 
 ```JavaScript
 db.produtos.aggregate([
-  // 1️⃣ Filtra produtos com idProduto entre 10 e 50
+  // Filtra produtos com idProduto entre 10 e 50
   { 
     $match: { idProduto: { $gt: 10, $lt: 50 } } 
   },
 
-  // 2️⃣ Desestrutura o array de SKUs para criar um documento por SKU
+  //Desestrutura o array de SKUs para criar um documento por SKU
   { 
     $unwind: "$skus" 
   },
 
-  // 3️⃣ Agrupa os produtos contando a quantidade de SKUs
+  // Agrupa os produtos contando a quantidade de SKUs
   { 
     $group: { 
       _id: "$idProduto", 
@@ -237,12 +237,12 @@ db.produtos.aggregate([
     } 
   },
 
-  // 4️⃣ Ordena pelos produtos com maior quantidade de SKUs primeiro
+  //Ordena pelos produtos com maior quantidade de SKUs primeiro
   { 
     $sort: { totalSKUs: -1 } 
   },
 
-  // 5️⃣ Adiciona um campo para classificar o nível do produto baseado no número de SKUs
+  // Adiciona um campo para classificar o nível do produto baseado no número de SKUs
   { 
     $addFields: { 
       nivelProduto: { 
@@ -273,6 +273,10 @@ O Pymongoarrow é uma extensão do PyMongo que melhora a eficiência ao converte
 docker compose up -d jupyter_service
 
 ```
+
+
+> [!IMPORTANT]
+> Olhe os logs para pegar o endereço do Jupyter
 
 ## Abra o arquivo `pyMongoArrow.ipynb` que está dentro da pasta
 
