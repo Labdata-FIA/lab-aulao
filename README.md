@@ -123,6 +123,15 @@ Principais Estágios do Pipeline
 * $addFields – Adiciona novos campos calculados.
 
 
+## Filtrar os documentos
+
+```JavaScript
+db.produtos.aggregate([
+  { $match: { idProduto: { $gt: 10, $lt: 50 } } }
+])
+
+```
+
 ## Contar o número total de SKUs por produto ($size)
 
 ```JavaScript
