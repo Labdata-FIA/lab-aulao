@@ -9,8 +9,8 @@ from bson import ObjectId
 
 # Conexão com o MongoDB
 client = MongoClient(settings.DATABASE_URL)
-db = settings.DATABASE
-produto_collection = settings.COLLECTION_PRODUCT
+db = client[settings.DATABASE]
+produto_collection = db[settings.COLLECTION_PRODUCT]
 
 router = APIRouter()
 
