@@ -1,0 +1,19 @@
+{
+    "connector.class": "io.debezium.connector.mongodb.MongoDbConnector",
+    "tasks.max": "1",
+    "mongodb.connection.string": "mongodb://mongo1:27017,mongo2:27017,mongo3:27017/loja?replicaSet=db-replica-set&readPreference=secondaryPreferred",
+    "database.include.list": "loja",
+    "collection.include.list": "loja.produtos",
+    "topic.prefix" : "mongo",
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable": "false",
+
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": "false",
+
+    "snapshot.mode": "initial",
+   
+    "errors.tolerance": "all",
+    "errors.log.enable": "true",
+    "errors.log.include.messages": "true"
+}
