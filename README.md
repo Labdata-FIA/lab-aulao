@@ -79,6 +79,8 @@ rs.status()
 
 load("/scripts/importProdutos.js")
 
+db.produtos.findOne()
+
 ```
 
 ## Criar os indices para o idProduto e array de Skus
