@@ -262,7 +262,20 @@ db.produtos.aggregate([
 ])
 ```
 
+## Salvar o resultado da consulta em outra collection
 
+```JavaScript
+db.produtos.aggregate([
+  { "$project": { "nomeProduto": 1, "quantidadeSkus": { "$size": "$skus" } } },
+  {  $out: "skus" }
+])
+
+ show collections;
+
+
+ db.skus.findOne();
+ 
+```
 
 # PyMongoArrow
 O Pymongoarrow é uma extensão do PyMongo que melhora a eficiência ao converter grandes volumes de dados do MongoDB para formatos compatíveis com Apache Arrow. Isso permite análises rápidas e eficientes em Pandas, NumPy e outras ferramentas de Data Science.
