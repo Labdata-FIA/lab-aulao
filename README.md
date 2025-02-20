@@ -109,6 +109,9 @@ rs.config().members;
 
 # Pipelines no MongoDB
 
+![Mongo db](/content/mongodb-agregacao.png)
+
+
 No MongoDB, um pipeline de agregação é uma sequência de estágios que processam documentos em uma coleção, permitindo transformar, filtrar, agrupar e analisar dados de forma eficiente. Cada estágio recebe os documentos processados do estágio anterior e pode aplicar diversas operações.
 
 Principais Estágios do Pipeline
