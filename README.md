@@ -315,7 +315,7 @@ docker compose up -d api
 > `pip install --force-reinstall -e . `
 
 ```bash
-docker exec -it mongo1 /bin/bash
+docker exec -it fast-api-fia  /bin/bash
 
 fia --help
 
