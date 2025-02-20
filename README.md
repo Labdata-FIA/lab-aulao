@@ -331,7 +331,7 @@ Criando a imagem com DockerFile
 
 ```bash
 
-docker image build -t kafka-connet-debezium:3.0.7.Final  -f Dockerfile .
+docker image build -t kafka-connet-debezium:3.0.7.Final  -f  kafka-connect/Dockerfile .
 
 docker compose up -d  kafka-broker zookeeper connect
 ```
