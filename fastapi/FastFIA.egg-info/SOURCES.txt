@@ -1,7 +1,0 @@
-setup.py
-FastFIA.egg-info/PKG-INFO
-FastFIA.egg-info/SOURCES.txt
-FastFIA.egg-info/dependency_links.txt
-FastFIA.egg-info/entry_points.txt
-FastFIA.egg-info/requires.txt
-FastFIA.egg-info/top_level.txt
