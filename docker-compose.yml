@@ -47,7 +47,7 @@ services:
     user: root
     networks:
       - mongo-network
-    entrypoint: "/jupyter/docker-entrypoint.sh"
+    #entrypoint: "/jupyter/docker-entrypoint.sh"
     depends_on:
       - mongo1
       - mongo2
@@ -57,6 +57,7 @@ services:
     volumes:
       - ./jupyter/docker-entrypoint.sh:/jupyter/docker-entrypoint.sh
       - ./jupyter/pyMongoArrow.ipynb:/home/src/pyMongoArrow.ipynb
+    command: jupyter notebook --ip 0.0.0.0 --port 8085 --allow-root
 
   api:
     build:

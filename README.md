@@ -274,7 +274,7 @@ db.produtos.aggregate([
 
 
  db.skus.findOne();
- 
+
 ```
 
 # PyMongoArrow
