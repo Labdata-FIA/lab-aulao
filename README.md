@@ -290,6 +290,25 @@ docker compose up -d api
 ```
 > http://localhost:8000/docs
 
+
+### CLI com a aplicação FastApi
+
+> [!IMPORTANT]
+> Se não tiver acesso a criar o pacote do fastApi, force a instalação de dentro do container ou tire o mapeamento do volumento 
+> do arquivo docker comper
+> `pip install --force-reinstall -e . `
+
+```bash
+docker exec -it mongo1 /bin/bash
+
+fia --help
+
+fia consultarproduto --produto-id "67b531141a78374c04d16260"
+
+```
+
+
+
 ## Configurando o Kafka Connect e seus conectores, que serão responsáveis,  pela leitura das informações em Mongodb
 
 Criando a imagem com DockerFile

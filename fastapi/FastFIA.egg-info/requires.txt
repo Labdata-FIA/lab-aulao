@@ -4,4 +4,3 @@ pymongo[srv]
 python-dotenv
 orjson==3.10.14
 click
-typer

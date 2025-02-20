@@ -1,0 +1,2 @@
+[console_scripts]
+fia = app.core.cli:main
