@@ -388,4 +388,260 @@ Consumindo mensagem mongo.loja.produtos
 kafka-console-consumer --bootstrap-server localhost:9092 --topic mongo.loja.produtos --from-beginning
 ```
 
+## Criando o worker para a leitura das mensagens no kafka
 
+
+Vamos criar a estrutura abaixo
+
+![Lab](/content/worker-python.png)
+
+
+* app/__init__.py
+* app/_config.py
+* app/_ consumer.py
+* app/_loggerWorker.py
+* app/_main.py
+* app/_processor.py
+* __init__.py
+* config.py
+* consumer.py
+* loggerWorker.py
+* main.py
+* processor.py
+
+
+### Arquivos dentro da pasta app
+
+
+### Arquivo `config.py`
+
+```python
+import os
+from dotenv import load_dotenv
+
+if os.getenv("DOCKER_ENV") is None:  # Se NÃO estiver rodando no Docker
+    # Carrega as variáveis de ambiente do arquivo .env
+    load_dotenv(override=True)
+
+
+# Configurações do Kafka
+KAFKA_CONFIG = {
+    'bootstrap.servers': os.getenv('KAFKA_BOOTSTRAP_SERVERS', 'kafka-broker:29092'),
+    'group.id': os.getenv('KAFKA_GROUP_ID', 'default-group'),
+    'auto.offset.reset': os.getenv('KAFKA_AUTO_OFFSET_RESET', 'earliest'),
+}
+
+# Nome do tópico
+TOPIC = os.getenv('KAFKA_TOPIC', 'default-topic')
+
+
+```
+
+
+### Arquivo `consumer.py`
+```python
+from confluent_kafka import Consumer, KafkaError
+import logging
+from processor import ProcessMessage
+from typing import  Optional
+
+class KafkaConsumerWorker:
+
+    def __init__(self, 
+                config,
+                logger: Optional[logging.Logger] = None,):
+        
+        self.KAFKA_CONFIG = config.KAFKA_CONFIG
+        self.TOPIC = config.TOPIC
+        self._logger = logger or logging.getLogger("worker.kafka")
+        self.processMessage = ProcessMessage();
+    
+    def consume_events(self):
+        """
+        Consome eventos do Kafka e processa.
+        """
+        consumer = Consumer(self.KAFKA_CONFIG)
+        consumer.subscribe([self.TOPIC])
+
+        try:
+            self._logger.info(f"Assinado ao tópico: {self.TOPIC} - {self.KAFKA_CONFIG}  ")       
+            while True:
+                msg = consumer.poll(timeout=1.0)  # Aguarda por mensagens
+
+                if msg is None:
+                    continue  # Sem mensagens no momento
+
+                if msg.error():
+                    if msg.error().code() == KafkaError._PARTITION_EOF:
+                        continue  # Fim da partição
+                    else:
+                        self._logger.error(f"Erro no Kafka: {msg.error()}")
+                        continue
+
+                # Processar a mensagem recebida
+                self._logger.info(f"Mensagem recebida: {msg.value().decode('utf-8')}")
+
+                self.processMessage.process_event(msg)
+
+        except KeyboardInterrupt:
+            self._logger.error("Interrompido pelo usuário.")
+        finally:
+            consumer.close()
+
+```
+
+### Arquivo `loggerWorker.py`
+```python
+import logging
+
+class LoggerWorker:
+    def __init__(self, name="worker.kafka", log_level=logging.DEBUG, log_file=None):
+        """
+        Inicializa o logger com a configuração fornecida.
+
+        :param name: Nome do logger (default é "worker.kafka").
+        :param log_level: Nível de log (default é DEBUG).
+        :param log_file: Caminho do arquivo de log (default é None, o que significa apenas imprimir no console).
+        """
+        # Cria o logger com o nome fornecido
+        self.logger = logging.getLogger(name)
+        self.logger.setLevel(log_level)
+
+        # Cria o formatter para as mensagens de log
+        formatter = logging.Formatter(fmt="[%(asctime)s][%(levelname)s] %(message)s", datefmt="%d-%m-%Y %H:%M:%S")
+
+        # Cria o StreamHandler para exibir os logs no console
+        stream_handler = logging.StreamHandler()
+        stream_handler.setFormatter(formatter)
+        self.logger.addHandler(stream_handler)
+
+        # Se um arquivo de log for fornecido, cria o FileHandler
+        if log_file:
+            file_handler = logging.FileHandler(log_file)
+            file_handler.setFormatter(formatter)
+            self.logger.addHandler(file_handler)
+
+   
+```
+
+### Arquivo `main.py`
+
+```python
+from consumer import KafkaConsumerWorker
+from loggerWorker import LoggerWorker
+import config
+import logging
+
+
+if __name__ == "__main__":
+     # Configuração do logger
+    logger_worker = LoggerWorker()  # Criando uma instância do logger  
+    _logger = logging.getLogger("worker.kafka")
+    _logger.info("Worker iniciado")
+   
+    consummer = KafkaConsumerWorker(config)  # Criando uma instância do logger
+    consummer.consume_events()
+
+```
+
+### Arquivo `processor.py`
+
+```python
+from confluent_kafka import Consumer, KafkaError
+import logging
+from processor import ProcessMessage
+from typing import  Optional
+
+class KafkaConsumerWorker:
+
+    def __init__(self, 
+                config,
+                logger: Optional[logging.Logger] = None,):
+        
+        self.KAFKA_CONFIG = config.KAFKA_CONFIG
+        self.TOPIC = config.TOPIC
+        self._logger = logger or logging.getLogger("worker.kafka")
+        self.processMessage = ProcessMessage();
+    
+    def consume_events(self):
+        """
+        Consome eventos do Kafka e processa.
+        """
+        consumer = Consumer(self.KAFKA_CONFIG)
+        consumer.subscribe([self.TOPIC])
+
+        try:
+            self._logger.info(f"Assinado ao tópico: {self.TOPIC} - {self.KAFKA_CONFIG}  ")       
+            while True:
+                msg = consumer.poll(timeout=1.0)  # Aguarda por mensagens
+
+                if msg is None:
+                    continue  # Sem mensagens no momento
+
+                if msg.error():
+                    if msg.error().code() == KafkaError._PARTITION_EOF:
+                        continue  # Fim da partição
+                    else:
+                        self._logger.error(f"Erro no Kafka: {msg.error()}")
+                        continue
+
+                # Processar a mensagem recebida
+                self._logger.info(f"Mensagem recebida: {msg.value().decode('utf-8')}")
+
+                self.processMessage.process_event(msg)
+
+                # Commit manual após processar a mensagem
+                consumer.commit(asynchronous=False)
+
+        except KeyboardInterrupt:
+            self._logger.error("Interrompido pelo usuário.")
+        finally:
+            consumer.close()
+
+```
+
+### Arquivo `Dockerfile`
+
+```python
+# Imagem base do Python
+FROM python:3.9-slim
+
+# Diretório de trabalho
+WORKDIR /app
+
+# Instala dependências
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copia os arquivos do projeto
+COPY . .
+
+# Comando de inicialização
+CMD ["python", "app/main.py"]
+
+```
+
+### Arquivo `requirements.txt`
+
+```text
+confluent-kafka==2.1.1
+boto3==1.35.76
+python-dotenv==1.0.0
+```
+
+
+## Criando a imagem docker
+
+
+> [!IMPORTANT]
+> Lembrar de informar o path do Dockerfile corretamente
+
+
+```bash
+docker build -t kafka-worker-consumer ./kafka-python
+
+docker compose up -d kafka-worker-consumer
+
+```
+
+## Deu certo??
