@@ -323,3 +323,5 @@ fia consultarproduto --produto-id "67b531141a78374c04d16260"
 
 ```
 
+
+[LAB KAFKA](Kafka/README.md)

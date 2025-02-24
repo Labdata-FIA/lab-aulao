@@ -341,3 +341,5 @@ docker compose up -d kafka-worker-consumer
 
 ## Deu certo??
 Acesse os logs
+
+
