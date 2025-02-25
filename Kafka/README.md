@@ -88,7 +88,7 @@ kafka-console-consumer --bootstrap-server localhost:9092 --topic mongo.loja.prod
 ## Criando o worker para a leitura das mensagens no kafka
 
 
-Crie um pastinha e dentro dela a estrutura abaixo
+Crie um pastinha worker com  a estrutura abaixo dentro
 
 ![Lab](/content/worker-python.png)
 
