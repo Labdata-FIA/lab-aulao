@@ -329,7 +329,7 @@ python-dotenv==1.0.0
 
 
 > [!IMPORTANT]
-> Lembrar de informar o path do Dockerfile corretamente
+> Lembrar de entrar na pastinha worker do Dockerfile corretamente
 
 
 ```bash
