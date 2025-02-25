@@ -325,3 +325,5 @@ Acesse os logs
 
 ## Altere informações do mongodb da collection produtos
 
+
+[LAB KAFKA](nifi/README.md)

@@ -27,7 +27,15 @@
 > https://localhost:9443/nifi/#/login
 
 
+|Usuário|Senha|
+|------------------|--------------|
+|admin|fia@2024@ladata@laboratorio|
+
+
 ### Criando o Process Group
+
+Process Group (Grupo de Processos) é um agrupador lógico que organiza um conjunto de processadores e outros componentes do fluxo de dados
+
 ![Lab](/content/nifi1.png)
 
 
@@ -39,15 +47,18 @@ No Apache NiFi, Contexto de Parâmetros é um recurso que permite centralizar e 
 
 
 ### Os principais benefícios incluem:
-✅ Reutilização – Um único conjunto de parâmetros pode ser aplicado a vários componentes.
-✅ Segurança – Parâmetros sensíveis, como credenciais, podem ser protegidos.
-✅ Facilidade de Alteração – Ajustes podem ser feitos sem modificar diretamente os fluxos.
+* ✅ Reutilização – Um único conjunto de parâmetros pode ser aplicado a vários componentes.
+* ✅ Segurança – Parâmetros sensíveis, como credenciais, podem ser protegidos.
+* ✅ Facilidade de Alteração – Ajustes podem ser feitos sem modificar diretamente os fluxos.
 
 
 
 ![Lab](/content/nifi3.png)
 
 ![Lab](/content/nifi4.png)
+
+![Lab](/content/nifi-parameter.png)
+
 
 ![Lab](/content/nifi5.png)
 
@@ -61,13 +72,41 @@ Para atribuir um Contexto de Parâmetro a um Grupo de Processos, clique em Confi
 No Apache NiFi, os Controller Services são componentes compartilháveis que fornecem funcionalidades comuns a vários processadores dentro de um fluxo de dados. Eles permitem centralizar configurações e melhorar a eficiência do processamento.
 
 Exemplos de Controller Services:
-🔹 DBCPConnectionPool – Gerencia conexões com bancos de dados.
-🔹 SSLContextService – Configura SSL/TLS para comunicação segura.
-🔹 AvroSchemaRegistry – Define esquemas de dados Avro para validação.
+* 🔹 DBCPConnectionPool – Gerencia conexões com bancos de dados.
+* 🔹 SSLContextService – Configura SSL/TLS para comunicação segura.
+* 🔹 AvroSchemaRegistry – Define esquemas de dados Avro para validação.
+
+
+### Criando um Processeor GenerateFlowFile
+
+Altere o Custom Text do GenerateFlowFile para o json abaixo
+
+```json
+{
+  "idProduto": "${random():mod(1000):plus(1)}",
+  "nomeProduto": "Produto Teste",
+  "orderId": "${UUID()}",
+  "date": "${now():format('yyyy-MM-dd HH:mm:ss')}"
+}
+```
 
 ![Lab](/content/nifi7.png)
 
+
+
 ![Lab](/content/nifi8.png)
+
+### Configurando o Controller Services `Kafka3ConnectionService`
+
+|Property|Value|
+|------------------|--------------|
+|Bootstrap Servers|#{kafka-borker}|
+
+![Lab](/content/nifi8-1.png)
+
+![Lab](/content/nifi8-2.png)
+
+
 
 ### Criando um Processor PublishKafka
 
@@ -89,9 +128,19 @@ Exemplos de Controller Services:
 
 ### Deu tudo certo ???
 
+### Listando os tópicos
+
+```bash
+docker exec -it kafka-broker /bin/bash
+kafka-topics --bootstrap-server localhost:9092 --list 
+
+kafka-console-consumer --bootstrap-server localhost:9092 --topic topic-demo --from-beginning
+```
+
 Linguem de expressão
 https://nifi.apache.org/docs/nifi-docs/html/expression-language-guide.html
 
+---
 
 ## Vamos criar outro ProcessGroup com o nome de kafka
 
@@ -112,6 +161,18 @@ Configure o Parameter Context a um Grupo de Processos e crie os parametros novos
 > Não esqueça de habilitar o service
 
 Teste o fluxo, atualizando o documento no mongodb.
+
+```bash
+docker exec -it mongo1 /bin/bash
+
+mongosh 
+
+use loja
+
+db.produtos.findOne()
+
+```
+---
 
 ## Criando um Process Group para o MiniIO, mas antes..
 
