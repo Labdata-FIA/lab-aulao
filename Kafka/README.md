@@ -242,57 +242,37 @@ if __name__ == "__main__":
 ### Arquivo `processor.py`
 
 ```python
-from confluent_kafka import Consumer, KafkaError
-import logging
-from processor import ProcessMessage
+import json
 from typing import  Optional
+import logging
 
-class KafkaConsumerWorker:
 
-    def __init__(self, 
-                config,
+class ProcessMessage:
+
+    def __init__(self,               
                 logger: Optional[logging.Logger] = None,):
-        
-        self.KAFKA_CONFIG = config.KAFKA_CONFIG
-        self.TOPIC = config.TOPIC
+       
         self._logger = logger or logging.getLogger("worker.kafka")
-        self.processMessage = ProcessMessage();
-    
-    def consume_events(self):
+        
+    def process_event(self, message):
         """
-        Consome eventos do Kafka e processa.
+        Processa um evento Kafka e acessa o objeto correspondente no MinIO.
         """
-        consumer = Consumer(self.KAFKA_CONFIG)
-        consumer.subscribe([self.TOPIC])
-
         try:
-            self._logger.info(f"Assinado ao tópico: {self.TOPIC} - {self.KAFKA_CONFIG}  ")       
-            while True:
-                msg = consumer.poll(timeout=1.0)  # Aguarda por mensagens
+            # Decodificando a mensagem JSON
+            payload = message.value().decode('utf-8')
+            data = json.loads(payload)
+            
+            # Exibindo a mensagem completa          
+            self._logger.info(f"Mensagem recebida:{json.dumps(data, indent=4)}")
 
-                if msg is None:
-                    continue  # Sem mensagens no momento
+            # Processamento adicional (por exemplo, extrair o campo 'after')
+            if 'after' in data:
+                after_data = data['after']
+                self._logger.info(f"\nDados 'after:{json.dumps(after_data, indent=4)}")
 
-                if msg.error():
-                    if msg.error().code() == KafkaError._PARTITION_EOF:
-                        continue  # Fim da partição
-                    else:
-                        self._logger.error(f"Erro no Kafka: {msg.error()}")
-                        continue
-
-                # Processar a mensagem recebida
-                self._logger.info(f"Mensagem recebida: {msg.value().decode('utf-8')}")
-
-                self.processMessage.process_event(msg)
-
-                # Commit manual após processar a mensagem
-                consumer.commit(asynchronous=False)
-
-        except KeyboardInterrupt:
-            self._logger.error("Interrompido pelo usuário.")
-        finally:
-            consumer.close()
-
+        except Exception as e:
+            self._logger.error(f"Erro ao processar a mensagem: {e}")
 ```
 
 ### Arquivo `Dockerfile`
@@ -329,11 +309,11 @@ python-dotenv==1.0.0
 
 
 > [!IMPORTANT]
-> Lembrar de entrar na pastinha worker do Dockerfile corretamente
+> Lembrar de informar o path do Dockerfile corretamente
 
 
 ```bash
-docker build -t kafka-worker-consumer ./kafka-python
+docker build -t kafka-worker-consumer ./worker
 
 docker compose up -d kafka-worker-consumer
 
@@ -342,4 +322,6 @@ docker compose up -d kafka-worker-consumer
 ## Deu certo??
 Acesse os logs
 
+
+## Altere informações do mongodb da collection produtos
 
