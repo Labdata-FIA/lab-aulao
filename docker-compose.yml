@@ -195,6 +195,22 @@ services:
     networks:
       mongo-network:
 
+  kafka-worker-python:
+    image: kafka-worker-consumer
+    container_name: kafka-worker-python
+    environment:     
+      KAFKA_BOOTSTRAP_SERVERS: kafka-broker:29092
+      KAFKA_GROUP_ID: kafka-worker-consume-minio
+      KAFKA_AUTO_OFFSET_RESET: earliest
+      KAFKA_TOPIC: sink-minio-produto
+      APP_MINIO: true
+      KAFKA_AUTO_COMMIT: False
+      DOCKER_ENV: 1
+    depends_on:
+      - kafka-broker 
+    restart: always
+    networks:
+      mongo-network:
 
   nifi:
     image: apache/nifi:2.2.0

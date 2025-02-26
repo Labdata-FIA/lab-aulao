@@ -10,8 +10,10 @@ class KafkaConsumerWorker:
                 logger: Optional[logging.Logger] = None,):
         
         self.KAFKA_CONFIG = config.KAFKA_CONFIG
-        self.TOPIC = config.TOPIC
+        self.TOPIC = config.TOPIC      
+        self.APP_MINIO=config.APP_MINIO  
         self._logger = logger or logging.getLogger("worker.kafka")
+        self.config =config
         self.processMessage = ProcessMessage();
     
     def consume_events(self):
@@ -39,7 +41,11 @@ class KafkaConsumerWorker:
                 # Processar a mensagem recebida
                 self._logger.info(f"Mensagem recebida: {msg.value().decode('utf-8')}")
 
-                self.processMessage.process_event(msg)
+             
+                if self.APP_MINIO:
+                    self.processMessage.process_event_minio(msg, self.config)
+                else:
+                    self.processMessage.process_event(msg)
 
                 # Commit manual após processar a mensagem
                 consumer.commit(asynchronous=False)

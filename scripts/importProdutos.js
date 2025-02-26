@@ -1,6 +1,6 @@
 var produtos = [];
 
-for (var i = 0; i < 500; i++) {
+for (var i = 8051; i < 8500; i++) {
     var idProduto = i + 1;
 
     var numSkus = Math.floor(Math.random() * 5) + 1;

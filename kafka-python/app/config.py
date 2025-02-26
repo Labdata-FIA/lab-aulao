@@ -17,3 +17,12 @@ KAFKA_CONFIG = {
 # Nome do tópico
 TOPIC = os.getenv('KAFKA_TOPIC', 'default-topic')
 
+# Configurações do MinIO
+MINIO_CONFIG = {
+    'endpoint_url': os.getenv('MINIO_ENDPOINT_URL', 'http://minio:9000'),
+    'aws_access_key_id': os.getenv('MINIO_ACCESS_KEY', 'cursolab'),
+    'aws_secret_access_key': os.getenv('MINIO_SECRET_KEY', 'cursolab'),
+}
+
+# Configurações do MinIO
+APP_MINIO= os.getenv('APP_MINIO', '0')
