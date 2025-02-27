@@ -4,3 +4,6 @@ pymongoarrow
 pandas
 numpy
 pyarrow
+
+deltalake
+duckdb
