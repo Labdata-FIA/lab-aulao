@@ -70,6 +70,8 @@ No Apache NiFi, Contexto de Parâmetros é um recurso que permite centralizar e 
 |kafka-topic|topic-demo|
 |kafka-topic-produto|mongo.loja.produtos|
 
+![Lab](/content/nifi15.png)
+
 Para atribuir um Contexto de Parâmetro a um Grupo de Processos, clique em Configurar, na Paleta de Operação ou no menu de contexto do Grupo de Processos.
 
 ![Lab](/content/nifi6.png)
@@ -90,11 +92,7 @@ Altere o Custom Text do GenerateFlowFile para o json abaixo
 }
 ```
 
-![Lab](/content/nifi7.png)
 
-
-
-![Lab](/content/nifi8.png)
 
 ### Controller Services
 No Apache NiFi, os Controller Services são componentes compartilháveis que fornecem funcionalidades comuns a vários processadores dentro de um fluxo de dados. Eles permitem centralizar configurações e melhorar a eficiência do processamento.
@@ -103,6 +101,12 @@ Exemplos de Controller Services:
 * 🔹 DBCPConnectionPool – Gerencia conexões com bancos de dados.
 * 🔹 SSLContextService – Configura SSL/TLS para comunicação segura.
 * 🔹 AvroSchemaRegistry – Define esquemas de dados Avro para validação.
+
+![Lab](/content/nifi7.png)
+
+
+
+![Lab](/content/nifi8.png)
 
 
 ### Configurando o Controller Services `Kafka3ConnectionService`
@@ -130,7 +134,7 @@ Exemplos de Controller Services:
 |Topic Name|#{kafka-topic}|
 
 
-### Criando um Funnel
+### Criando e vinculando um Funil
 
 ![Lab](/content/nifi12.png)
 
@@ -157,9 +161,6 @@ https://nifi.apache.org/docs/nifi-docs/html/expression-language-guide.html
 
 ![Lab](/content/nifi14.png)
 
-Configure o Parameter Context a um Grupo de Processos e crie os parametros novos com os nomes `kafka-topic-produto` e `kafka-group-produtos` com os valores `mongo.loja.produtos` e `group-produtos`, respectivamente e crie um novo Service.
-
-![Lab](/content/nifi15.png)
 
 ![Lab](/content/nifi16.png)
 
@@ -204,7 +205,7 @@ docker exec -it kafka-broker /bin/bash
 kafka-consumer-groups --bootstrap-server localhost:9092 --list
 ```
 
-## As configurações do consume groups são :
+### Descrevendo o consumer group
 
 ```
 kafka-consumer-groups --bootstrap-server localhost:9092 --describe --group mongo.loja.produtos
@@ -225,10 +226,10 @@ kafka-consumer-groups --bootstrap-server localhost:9092 --describe --group mongo
 
 ## Criando ProcessGroup para o MinIO
 
-![Lab](/content/nifi19png)
+![Lab](/content/nifi19.png)
 
 
-## Criando Controller Services `AWSCredentialsProviderControllerService`
+## Criando Controller Services `AWSCredentialsProviderControllerService` para autenticação 
 
 ![Lab](/content/nifi22.png)
 
@@ -245,14 +246,7 @@ kafka-consumer-groups --bootstrap-server localhost:9092 --describe --group mongo
 
 
 
-|Property|Value|
-|------------------|--------------|
-|Bucket|raw|
-|Object Key|/kafka/produtos/year=${now():format('yyyy')}/month=${now():format('MM')}/day=${now():format('dd')}/${kafka.topic}/${filename}.json|
-
-
-
-## Criando Output Port 
+## Criando Output Input Port e correlacionando os Group Process
 
 ![Lab](/content/nifi17-1.png)
 
@@ -264,7 +258,7 @@ kafka-consumer-groups --bootstrap-server localhost:9092 --describe --group mongo
 ---
 
 
-### Configurando o Minio para gerar eventos
+## Configurando o Minio para gerar eventos
 
 ![MinIO](/content/minio-events-01.png)
 
